@@ -13,6 +13,14 @@ class Wallet {
         balance: ${this.balance}
       `;
   }
+
+  /**
+   *
+   * @param {signature unique for transactions} dataHash
+   */
+  sign(dataHash) {
+    return this.keyPair.sign(dataHash);
+  }
 }
 
 module.exports = Wallet;
