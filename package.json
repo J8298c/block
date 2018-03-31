@@ -9,9 +9,10 @@
     "start": "node ./app",
     "dev-test": "node dev-test.js"
   },
-  "keywords": [
-    "blockchain"
-  ],
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "keywords": ["blockchain"],
   "author": "Julio Mojica",
   "license": "MIT",
   "dependencies": {
