@@ -13,6 +13,10 @@ class TransactionPool {
       this.transaction.push(transaction);
     }
   }
+
+  existingKey(address) {
+    return this.transaction.find(t => t.input.address === address);
+  }
 }
 
 module.exports = TransactionPool;
