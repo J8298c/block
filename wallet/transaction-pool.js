@@ -1,3 +1,4 @@
+const Transaction = require('./transaction');
 class TransactionPool {
   constructor() {
     this.transaction = [];
@@ -24,18 +25,18 @@ class TransactionPool {
         return total + output.amount;
       }, 0);
 
-      if(transaction.input.amount !== outputTotal) {
+      if (transaction.input.amount !== outputTotal) {
         console.log(`Invalid transaction from ${transaction.input.address}`);
         return;
       }
 
-      if(!Transaction.verifyTransaction(transaction)) {
+      if (!Transaction.verifyTransaction(transaction)) {
         console.log(`Invalid signature from ${transaction.input.address}`);
         return;
       }
 
       return transaction;
-    })
+    });
   }
 }
 
