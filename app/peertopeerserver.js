@@ -32,8 +32,14 @@ class PeerToPeerServer {
   messageHandler(socket) {
     socket.on('message', message => {
       const data = JSON.parse(message);
-
-      this.blockchain.replaceChain(data);
+      switch(data.type) {
+        case MESSAGE_TYPES.chain:
+          this.blockchain.replaceChain(data.chain)
+          break;
+        case MESSAGE_TYPES.transaction:
+          this.transactionPool.updateOrAddTransaction(data.transaction)
+          break;
+      }
     });
   }
 
@@ -59,7 +65,7 @@ class PeerToPeerServer {
     );
   }
 
-  sendTransaction(transaction) {
+  sendTransaction(socket, transaction) {
     socket.send(
       JSON.stringify({
         type: MESSAGE_TYPES.transaction,
