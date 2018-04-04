@@ -1,12 +1,15 @@
 const ChainUtil = require('../chain-util');
 const { MINING_REWARD } = require('../config');
+
 class Transaction {
+
   constructor() {
     this.id = ChainUtil.id();
     this.input = null;
     this.outputs = [];
   }
 
+  
   update(senderWallet, recipient, amount) {
     const senderOutput = this.outputs.find(
       output => output.address === senderWallet.publicKey
@@ -24,23 +27,34 @@ class Transaction {
     return this;
   }
 
+  
+  static transactionWithOutputs(senderWallet, outputs) {
+    
+    const transaction = new this();
+
+    transaction.outputs.push(...outputs);
+
+    Transaction.signTransaction(transaction, senderWallet);
+
+    return transaction;
+  }
+
+  
   static newTransaction(senderWallet, recipient, amount) {
+    
     if (amount > senderWallet.balance) {
       console.log(`${amount} exceeds balance.`);
       return;
     }
 
     return Transaction.transactionWithOutputs(senderWallet, [
-      {
-        amount: senderWallet.balance - amount,
-        address: senderWallet.publicKey
-      },
-      { amount, address: recipient }
+      { amount: senderWallet.balance - amount, address: senderWallet.publicKey },
+      { amount, address: recipient}
     ]);
 
-    return transaction;
   }
 
+  
   static signTransaction(transaction, senderWallet) {
     transaction.input = {
       timestamp: Date.now(),
@@ -50,23 +64,15 @@ class Transaction {
     };
   }
 
+  
   static rewardTransaction(minerWallet, blockchainWallet) {
-    return Transaction.transactionWithOutputs(blockchainWallet, [
-      {
-        amount: MINING_REWARD,
-        address: minerWallet
-      }
-    ]);
+    return  Transaction.transactionWithOutputs(blockchainWallet, [{
+      amount: MINING_REWARD, address: minerWallet.publicKey
+    }])
   }
 
-  static transactionWithOutputs(senderWallet, outputs) {
-    const transaction = new this();
-    transaction.outputs.push(...outputs);
-    Transaction.signTransaction(transaction, senderWallet);
 
-    return transaction;
-  }
-
+  
   static verifyTransaction(transaction) {
     return ChainUtil.verifySignature(
       transaction.input.address,
