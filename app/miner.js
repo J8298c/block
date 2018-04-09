@@ -9,8 +9,8 @@ class Miner {
   }
 
   mine() {
-    const validTransaction = this.transactionPool.validTransaction();
-    validTransaction.push(
+    const validTransaction = this.transactionPool.validTransactions();
+    validTransactions.push(
       Transaction.rewardTransaction(this.wallet, Wallet.blockchainWallet())
     );
     const block = this.blockchain.addBlock(validTransaction);
